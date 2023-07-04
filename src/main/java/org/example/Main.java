@@ -3,6 +3,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.*;
+import org.openqa.selenium.support.ui.Wait;
 
 import java.security.Key;
 import java.sql.Driver;
@@ -15,28 +16,40 @@ public class Main
 
         System.setProperty("webdriver.chrome.driver","F:\\Selenium\\Chrome\\chromedriver.exe");
         ChromeDriver driver = new ChromeDriver();
-        driver.get("https://localhost:44346");
+        driver.get("https://vk.com");
 
-        WebElement mes = driver.findElement(By.xpath("//li[@class='LeftMenuItem-module__container--v2Q9c'][3]"));
-        mes.click();
 
-        WebElement input = driver.findElement(By.xpath("//a[text()='Chest_API']"));
-        input.click();
-        AddChest(driver, 20,r);
+       ConnectToVk(driver,"izer090@bk.ru", "zi89UHCw*CkCpgZ[]");
 
 
 
 
     }
-    private  static  void ConnectToVk (ChromeDriver driver, String Mail){
-        driver.get("https://vk.com/kekesik228");
-        WebElement Enter = driver.findElement(By.xpath("//button[text() = 'Войти'][1]"));
-        Enter.click();
-        WebElement Box = driver.findElement(By.xpath("//input[@class = 'VkIdForm__input']"));
-        Box.sendKeys(Mail);
-        Box.sendKeys(Keys.TAB);
-        Box.sendKeys(Keys.TAB);
-        Box.sendKeys(Keys.ENTER);
+    private  static  void ConnectToVk ( ChromeDriver driver , String Mail, String Pass){
+        String originalWindow = driver.getWindowHandle();
+        WebElement LoginField = driver.findElement(By.className("VkIdForm__input"));
+
+        LoginField.sendKeys(Mail);
+        LoginField.sendKeys(Keys.TAB);
+        LoginField.sendKeys(Keys.TAB);
+        LoginField.sendKeys(Keys.ENTER);
+
+
+       // wait.until(numberOfWindowsToBe(2));
+
+
+        for (String windowHandle : driver.getWindowHandles()) {
+            if(!originalWindow.contentEquals(windowHandle)) {
+                driver.switchTo().window(windowHandle);
+                break;
+            }
+        }
+
+
+        WebElement PassField = driver.findElement(By.xpath("//input[@class = 'vkc__TextField__input']"));
+        PassField.sendKeys(Pass);
+        WebElement ButtonLog = driver.findElement(By.className("vkc__EnterPasswordNoUserInfo__buttonWrap"));
+        ButtonLog.click();
     }
     private static void AddChest( ChromeDriver driver, int CreateNumber, Random r){
         for (int i = 0; i < CreateNumber; i++) {
